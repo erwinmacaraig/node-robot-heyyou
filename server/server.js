@@ -9,7 +9,7 @@ var {Robot} = require('./models/robot');
 var {Shop} = require('./models/shop');
 
 var app = express();
-var port = 3000;
+var port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.post('/shop', (req, res) => {
