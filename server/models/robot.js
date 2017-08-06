@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var autoIncrement = require('mongoose-auto-increment');
+
 autoIncrement.initialize(mongoose.connection);
 var robotSchema = new mongoose.Schema({
   x: {
@@ -27,5 +28,10 @@ robotSchema.plugin(autoIncrement.plugin, {
   startAt: 1
 });
 
+robotSchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) {    ret.id = ret._id; delete ret._id;  }
+});
 var Robot = mongoose.model('Robot', robotSchema);
 module.exports = {Robot};

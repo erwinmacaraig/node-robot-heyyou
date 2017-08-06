@@ -12,7 +12,7 @@ var shopSchema = new mongoose.Schema({
   },
   robot: [
     {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.Number,
       ref: 'Robot'
     }
   ]
