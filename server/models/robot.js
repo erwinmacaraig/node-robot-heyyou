@@ -3,19 +3,22 @@ var mongoose = require('mongoose');
 var robotSchema = new mongoose.Schema({
   x: {
     type: Number,
-    require: true
+    required: true,
   },
   y: {
     type: Number,
-    require: true
+    required: true
   },
   heading: {
     type: String,
-    require: true
+    required: true,
+    maxlength: 1
   },
   commands: {
     type: String,
-    require: true
+    required: true,
+    trim: true,
+    minlength: 1
   }
 });
 

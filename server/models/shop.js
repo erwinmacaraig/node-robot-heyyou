@@ -3,11 +3,11 @@ var mongoose = require('mongoose');
 var shopSchema = new mongoose.Schema({
   width:{
     type: Number,
-    require: true
+    required: true
   },
   height: {
     type: Number,
-    require: true
+    required: true
   },
   robot: [
     {
