@@ -211,6 +211,50 @@ app.delete('/shop/:id/robot/:rid', (req, res) => {
     });
   });
 }); //end delete
+
+app.post('/shop/:id/execute', (req, res) => {
+  var id = req.params.id;
+  var bots = [];
+
+  Shop.findById(id).then((shop) => {
+    if(!shop){
+      return res.status(404).send({
+        message: 'No shop with id ' + id
+      });
+    }
+    if(shop.robot.length > 0){
+      Robot.find({
+        '_id': { $in: shop.robot}
+      },{ __v: 0}).then((docs) => {
+        res.send({
+         id: shop._id,
+         width: shop.width,
+         height: shop.height,
+         robots: docs,
+         message: 'Not implemented'
+       });
+      });
+    }
+    else {
+      res.send({
+       id: shop._id,
+       width: shop.width,
+       height: shop.height,
+       robots: bots,
+       message: 'Not implemented'
+     });
+    }
+
+
+  }).catch((e) => {
+    res.status(400).send(
+      {
+        message: 'Invalid Request'
+      }
+    );
+  });
+});
+
 app.listen(port, () => {
   console.log(`Started up at port ${port}`);
 });
