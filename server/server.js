@@ -35,22 +35,13 @@ app.get('/shop/:id', (req, res) => {
   var id = req.params.id;
   var bots = [];
 
-  /*
-  if(!ObjectID.isValid(id)){
-    return res.status(404).send(
-      {
-        message: 'Invalid id ' + id
-      }
-    );
-  }
-  */
   Shop.findById(id).then((shop) => {
     if(!shop){
       return res.status(404).send({
         message: 'No shop with id ' + id
       });
     }
-    if(shop.robot){
+    if(shop.robot.length > 0){
       Robot.find({
         '_id': { $in: shop.robot}
       },{ __v: 0}).then((docs) => {
@@ -84,13 +75,7 @@ app.get('/shop/:id', (req, res) => {
 //DELETE SHOP BY ID
 app.delete('/shop/:id', (req, res) => {
   var id = req.params.id;
-  /*
-  if(!ObjectID.isValid(id)){
-    return res.status(404).send({
-      message: 'Invalid id ' + id
-    });
-  }
-  */
+
   Shop.findByIdAndRemove(id).then((shop) => {
     if(!shop){
       return res.status(404).send({
@@ -156,6 +141,42 @@ app.post('/shop/:id/robot', (req, res) => {
   });
 });
 
+//UPDATE ROBOT
+app.put('/shop/:id/robot/:rid', (req, res) => {
+  var id = req.params.id;
+  var rid = req.params.rid;
+  var body = _.pick(req.body, ['x', 'y', 'heading', 'commands']);
+
+  Shop.find({'_id':id, 'robot': {"$all": [rid]}}).then((shop) => {
+    if(shop.length == 0){
+      return res.status(400).send({
+        message: 'Cannot find robot in shop'
+      });
+    }
+    Robot.findByIdAndUpdate(rid,
+      {
+        $set: body
+      },
+    {
+      new: true
+    }).then((doc) => {
+      if(!doc){
+        return res.status(404).send({
+          message: 'Robot not found'
+        });
+      }
+      res.send(doc);
+    }).catch((e) => {
+      res.status(400).send({
+        message: 'Cannot update robot'
+      });
+    });
+    //res.send(shop);
+
+  }); //end finding shop
+
+
+});
 app.listen(port, () => {
   console.log(`Started up at port ${port}`);
 });
