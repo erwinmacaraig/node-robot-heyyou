@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-
+var autoIncrement = require('mongoose-auto-increment');
+autoIncrement.initialize(mongoose.connection);
 var shopSchema = new mongoose.Schema({
   width:{
     type: Number,
@@ -16,7 +17,10 @@ var shopSchema = new mongoose.Schema({
     }
   ]
 });
-
+shopSchema.plugin(autoIncrement.plugin, {
+  model: 'Shop',
+  startAt: 1
+});
 var Shop = mongoose.model('Shop', shopSchema);
 
 module.exports = {Shop};

@@ -13,8 +13,7 @@ var port = 3000;
 app.use(bodyParser.json());
 
 app.post('/shop', (req, res) => {
-  console.log(req.body);
-  var shop = new Shop({
+    var shop = new Shop({
     width: req.body.width,
     height: req.body.height
   });
