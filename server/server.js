@@ -54,7 +54,35 @@ app.get('/shop/:id', (req, res) => {
       robots: shop.robot
     });
   }).catch((e) => {
-    res.status(400).send();
+    res.status(400).send(
+      {
+        message: 'Invalid Request'
+      }
+    );
+  });
+});
+
+//DELETE SHOP BY ID
+app.delete('/shop/:id', (req, res) => {
+  var id = req.params.id;
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send({
+      message: 'Invalid id ' + id
+    });
+  }
+  Shop.findByIdAndRemove(id).then((shop) => {
+    if(!shop){
+      return res.status(404).send({
+        message: 'No shop with id ' + id
+      });
+    }
+    res.send({
+      status: 'ok'
+    });
+  }).catch((e) => {
+    res.status(400).send({
+      message: 'Invalid Request'
+    });
   });
 });
 
