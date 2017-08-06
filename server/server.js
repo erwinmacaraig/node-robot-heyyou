@@ -171,12 +171,46 @@ app.put('/shop/:id/robot/:rid', (req, res) => {
         message: 'Cannot update robot'
       });
     });
-    //res.send(shop);
-
   }); //end finding shop
-
-
 });
+
+//DELETE ROBOT
+app.delete('/shop/:id/robot/:rid', (req, res) => {
+  var id = req.params.id;
+  var rid = req.params.rid;
+  var bots = [];
+
+  Shop.findOne({'_id':id, 'robot': {"$in": [rid]}}).then((shop) => {
+
+    if(!shop){
+      return res.status(400).send({
+        message: 'Cannot find robot in shop'
+      });
+    }
+    bots = shop.robot.slice();
+
+    //delete robot
+    Robot.findByIdAndRemove(rid).then((doc) => {
+      if(!doc){
+        return res.status(404).send({
+          message: 'Robot not found'
+        });
+      }
+      Shop.findByIdAndUpdate(id,
+      {
+        $set: {robot:bots}
+      },
+      {
+        returnOriginal: false
+      }).then((shop) => {
+        res.send({
+          status: 'ok'
+        });
+      });
+
+    });
+  });
+}); //end delete
 app.listen(port, () => {
   console.log(`Started up at port ${port}`);
 });
